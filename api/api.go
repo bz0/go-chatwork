@@ -6,7 +6,6 @@ import (
 	"path"
 	"net/http"
 	"io/ioutil"
-	"encoding/json"
 )
 
 const (
@@ -14,27 +13,21 @@ const (
 	Version    = "v2"
 )
 
-func RequestJSON(url string, token string) (result, error) {
+func RequestJSON(url string, token string) ([]byte, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		panic(err)
+		fmt.Println("Error at API request:%#v", err)
 	} 
 	req.Header.Set("X-ChatWorkToken", token)
-	fmt.Println(token)
 
     client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("Error at API request:%#v", err)
+		fmt.Println("Error at API request:%#v", err)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	var result []Task
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
+	return body, nil
 }
 
 func buildAPIEndpoint(p string) (*url.URL, error) {

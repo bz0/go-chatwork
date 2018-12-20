@@ -1,7 +1,8 @@
 package api
 
-import fmt    "fmt"
 import url    "net/url"
+import fmt    "fmt"
+import json   "encoding/json"
 
 type Task struct {
 	TaskID  int `json:"task_id"`
@@ -61,7 +62,7 @@ func (rts *RoomTaskService) BuildRequestURL() (string, error) {
 	}
 
 	queries.Add("status", rts.status)
-	u, err := buildAPIEndpoint("/" + Version + "/rooms/" + rts.roomId + "/tasks")
+	u, err := buildAPIEndpoint("/rooms/" + rts.roomId + "/tasks")
 	if err != nil {
 		return "", err
 	}
@@ -80,18 +81,14 @@ func NewRoomTaskService(token string) *RoomTaskService {
 	}
 }
 
-func (rts *RoomTaskService) ExecuteWeak() (result, error){
-	reqURL, err := rts.BuildRequestURL()
-	fmt.Println(reqURL)
-	return RequestJSON(reqURL, rts.token)
-}
-
-func (rts *RoomTaskService) Execute() (result, error){
-	result, err := rts.ExecuteWeak()
+func (rts *RoomTaskService) Execute() []Task{
+	reqUrl, err := rts.BuildRequestURL()
+	result, err := RequestJSON(reqUrl, rts.token)
+	var tasks []Task
+	err = json.Unmarshal([]byte(result), &tasks)
 	if err != nil {
-		return nil, err
+		fmt.Println("Error at API request:%#v", err)
 	}
 
-	return result, error
+	return tasks
 }
-
