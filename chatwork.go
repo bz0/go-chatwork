@@ -9,13 +9,15 @@ const (
 
 type Client struct {
 	// services
-	RoomTask *api.RoomTaskService
+	GetRoomTask *api.GetRoomTaskService
+	GetRoom     *api.GetRoomService
 }
 
 func New(token string) *Client {
 	c := &Client{
 	}
 
-	c.RoomTask = api.NewRoomTaskService(token)
+	c.GetRoomTask = api.NewGetRoomTaskService(token)
+	c.GetRoom     = api.NewGetRoomService(token)
 	return c
 }

@@ -4,6 +4,9 @@ Go製のChatworkAPIのラッパーライブラリです。
 
 # 使い方
 
+チャットワークAPI公式ドキュメント：  
+http://developer.chatwork.com/ja/
+
 ## チャットのタスク一覧を取得
 
 GET /rooms/{room_id}/tasks  
@@ -23,11 +26,25 @@ func main(){
     api.SetStatus("タスクのステータス(open / done)")
     tasks := api.Execute()
     
-    for _, p := range tasks {
-        fmt.Printf("%d : %s\n", p.TaskID, p.Body)
-    }
+    fmt.Println(tasks)
 }
 ```
 
-チャットワークAPI公式ドキュメント：  
-http://developer.chatwork.com/ja/
+## 自分のチャット一覧を取得
+
+GET /rooms  
+
+```go
+package main
+
+import "./go-chatwork"
+import "fmt"
+
+func main(){
+    client := chatwork.New("token指定")
+    api := client.GetRoom
+    room := api.Execute()
+    
+    fmt.Println(room)
+}
+```

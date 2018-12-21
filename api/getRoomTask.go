@@ -4,7 +4,7 @@ import url    "net/url"
 import fmt    "fmt"
 import json   "encoding/json"
 
-type Task struct {
+type GetRoomTask struct {
 	TaskID  int `json:"task_id"`
 	Account struct {
 		AccountID      int    `json:"account_id"`
@@ -22,7 +22,7 @@ type Task struct {
 	Status    string `json:"status"`
 }
 
-type RoomTaskService struct {
+type GetRoomTaskService struct {
 	token               string
 	roomId              string
 	accountId           string
@@ -30,27 +30,27 @@ type RoomTaskService struct {
 	status              string
 }
 
-func (rts *RoomTaskService) SetRoomId(roomId string) *RoomTaskService {
+func (rts *GetRoomTaskService) SetRoomId(roomId string) *GetRoomTaskService {
 	rts.roomId = roomId
 	return rts
 }
 
-func (rts *RoomTaskService) SetAccountId(accountId string) *RoomTaskService {
+func (rts *GetRoomTaskService) SetAccountId(accountId string) *GetRoomTaskService {
 	rts.accountId = accountId
 	return rts
 }
 
-func (rts *RoomTaskService) SetAssignedByAccountId(assignedByAccountId string) *RoomTaskService {
+func (rts *GetRoomTaskService) SetAssignedByAccountId(assignedByAccountId string) *GetRoomTaskService {
 	rts.assignedByAccountId = assignedByAccountId
 	return rts
 }
 
-func (rts *RoomTaskService) SetStatus(status string) *RoomTaskService {
+func (rts *GetRoomTaskService) SetStatus(status string) *GetRoomTaskService {
 	rts.status = status
 	return rts
 }
 
-func (rts *RoomTaskService) BuildRequestURL() (string, error) {
+func (rts *GetRoomTaskService) BuildRequestURL() (string, error) {
 	queries := url.Values{}
 
 	if (rts.accountId != ""){
@@ -71,8 +71,8 @@ func (rts *RoomTaskService) BuildRequestURL() (string, error) {
 	return u.String(), nil
 }
 
-func NewRoomTaskService(token string) *RoomTaskService {
-	return &RoomTaskService{
+func NewGetRoomTaskService(token string) *GetRoomTaskService {
+	return &GetRoomTaskService{
 		token:               token,
 		roomId:              "",
 		accountId:           "",
@@ -81,10 +81,10 @@ func NewRoomTaskService(token string) *RoomTaskService {
 	}
 }
 
-func (rts *RoomTaskService) Execute() []Task{
+func (rts *GetRoomTaskService) Execute() []GetRoomTask{
 	reqUrl, err := rts.BuildRequestURL()
 	result, err := RequestJSON(reqUrl, rts.token)
-	var tasks []Task
+	var tasks []GetRoomTask
 	err = json.Unmarshal([]byte(result), &tasks)
 	if err != nil {
 		fmt.Println("Error at API request:%#v", err)
