@@ -48,3 +48,23 @@ func main(){
     fmt.Println(room)
 }
 ```
+
+## チャットのメンバー一覧を取得
+
+GET /rooms/{room_id}/members
+
+```go
+package main
+
+import "./go-chatwork"
+import "fmt"
+
+func main(){
+    client := chatwork.New("token指定")
+    api := client.GetRoomMember
+    api.SetRoomId("部屋ID")
+    room := api.Execute()
+    
+    fmt.Println(room)
+}
+```
