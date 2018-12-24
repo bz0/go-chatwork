@@ -68,3 +68,24 @@ func main(){
     fmt.Println(room)
 }
 ```
+
+## チャットに新しいメッセージを追加
+
+POST /rooms/{room_id}/messages
+
+```go
+package main
+
+import "./go-chatwork"
+import "fmt"
+
+func main(){
+    client := chatwork.New("token指定")
+    api := client.PostRoomMessage
+    api.SetBody("メッセージ")
+    api.SetRoomId("部屋ID")
+    message := api.Execute()
+    
+    fmt.Println(message)
+}
+```
