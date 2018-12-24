@@ -12,6 +12,7 @@ type Client struct {
 	GetRoomTask     *api.GetRoomTaskService
 	GetRoomMember   *api.GetRoomMemberService
 	GetRoom         *api.GetRoomService
+	GetRoomMessage  *api.GetRoomMessageService
 	PostRoomMessage *api.PostRoomMessageService
 }
 
@@ -22,6 +23,7 @@ func New(token string) *Client {
 	c.GetRoomTask     = api.NewGetRoomTaskService(token)
 	c.GetRoomMember   = api.NewGetRoomMemberService(token)
 	c.GetRoom         = api.NewGetRoomService(token)
+	c.GetRoomMessage  = api.NewGetRoomMessageService(token)
 	c.PostRoomMessage = api.NewPostRoomMessageService(token)
 	return c
 }
