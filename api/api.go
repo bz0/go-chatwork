@@ -6,6 +6,7 @@ import (
 	"path"
 	"net/http"
 	"io/ioutil"
+	"strings"
 )
 
 const (
@@ -13,14 +14,26 @@ const (
 	Version    = "v2"
 )
 
-func RequestJSON(url string, token string) ([]byte, error) {
-	req, err := http.NewRequest("GET", url, nil)
+func RequestJSON(u *url.URL, method string, token string) ([]byte, error) {
+	var req *http.Request
+	var err error
+	switch method {
+		case "GET":
+			url := u.String()
+			req, err = http.NewRequest(method, url, nil)
+		case "POST", "PUT", "DELETE":
+			url := u.Scheme + "://" + u.Host + u.Path
+			req, err = http.NewRequest(method, url, strings.NewReader(u.RawQuery))
+			req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	}
+
 	if err != nil {
 		fmt.Println("Error at API request:%#v", err)
-	} 
+	}
+
 	req.Header.Set("X-ChatWorkToken", token)
 
-    client := &http.Client{}
+  client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("Error at API request:%#v", err)

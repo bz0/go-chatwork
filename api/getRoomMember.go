@@ -1,5 +1,6 @@
 package api
 
+import url    "net/url"
 import fmt    "fmt"
 import json   "encoding/json"
 
@@ -24,13 +25,13 @@ func (rms *GetRoomMemberService) SetRoomId(roomId string) *GetRoomMemberService 
 	return rms
 }
 
-func (rms *GetRoomMemberService) BuildRequestURL() (string, error) {
+func (rms *GetRoomMemberService) BuildRequestURL() (*url.URL, error) {
 	u, err := buildAPIEndpoint("/rooms/" + rms.roomId + "/members")
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return u.String(), nil
+	return u, nil
 }
 
 func NewGetRoomMemberService(token string) *GetRoomMemberService {
@@ -40,8 +41,8 @@ func NewGetRoomMemberService(token string) *GetRoomMemberService {
 }
 
 func (rts *GetRoomMemberService) Execute() []GetRoomMember{
-	reqUrl, err := rts.BuildRequestURL()
-	result, err := RequestJSON(reqUrl, rts.token)
+	u, err := rts.BuildRequestURL()
+	result, err := RequestJSON(u, "GET", rts.token)
 	var members []GetRoomMember
 	err = json.Unmarshal([]byte(result), &members)
 	if err != nil {

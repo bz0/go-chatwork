@@ -50,7 +50,7 @@ func (rts *GetRoomTaskService) SetStatus(status string) *GetRoomTaskService {
 	return rts
 }
 
-func (rts *GetRoomTaskService) BuildRequestURL() (string, error) {
+func (rts *GetRoomTaskService) BuildRequestURL() (*url.URL, error) {
 	queries := url.Values{}
 
 	if (rts.accountId != ""){
@@ -64,11 +64,11 @@ func (rts *GetRoomTaskService) BuildRequestURL() (string, error) {
 	queries.Add("status", rts.status)
 	u, err := buildAPIEndpoint("/rooms/" + rts.roomId + "/tasks")
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	u.RawQuery = queries.Encode()
 
-	return u.String(), nil
+	return u, nil
 }
 
 func NewGetRoomTaskService(token string) *GetRoomTaskService {
@@ -82,8 +82,8 @@ func NewGetRoomTaskService(token string) *GetRoomTaskService {
 }
 
 func (rts *GetRoomTaskService) Execute() []GetRoomTask{
-	reqUrl, err := rts.BuildRequestURL()
-	result, err := RequestJSON(reqUrl, rts.token)
+	u, err := rts.BuildRequestURL()
+	result, err := RequestJSON(u, "GET", rts.token)
 	var tasks []GetRoomTask
 	err = json.Unmarshal([]byte(result), &tasks)
 	if err != nil {

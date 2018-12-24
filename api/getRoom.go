@@ -1,5 +1,6 @@
 package api
 
+import url    "net/url"
 import fmt    "fmt"
 import json   "encoding/json"
 
@@ -23,13 +24,13 @@ type GetRoomService struct {
 	token               string
 }
 
-func (rts *GetRoomService) BuildRequestURL() (string, error) {
+func (rts *GetRoomService) BuildRequestURL() (*url.URL, error) {
 	u, err := buildAPIEndpoint("/rooms")
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return u.String(), nil
+	return u, nil
 }
 
 func NewGetRoomService(token string) *GetRoomService {
@@ -39,8 +40,8 @@ func NewGetRoomService(token string) *GetRoomService {
 }
 
 func (rts *GetRoomService) Execute() []GetRoom{
-	reqUrl, err := rts.BuildRequestURL()
-	result, err := RequestJSON(reqUrl, rts.token)
+	u, err := rts.BuildRequestURL()
+	result, err := RequestJSON(u, "GET", rts.token)
 	var room []GetRoom
 	err = json.Unmarshal([]byte(result), &room)
 	if err != nil {
